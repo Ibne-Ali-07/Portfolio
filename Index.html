@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Husnain Khan - QA Engineer Portfolio showcasing testing expertise, automation skills, and quality assurance projects">
+    <title>Ibne Ali - QA Engineer Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+    <!-- 3D Animated Background -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light theme">
+        <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="#home">
+                    <span class="logo-bracket"></span>
+                    Ibne Ali 
+                    <span class="logo-bracket"></span>
+                </a>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle mobile menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#objective" class="nav-link active">Objective</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#technical-education" class="nav-link">Technical Education</a></li>
+                <li><a href="#work-experience" class="nav-link">Work Experience</a></li>
+                <li><a href="#personal-projects" class="nav-link">Personal Projects</a></li>
+                <li><a href="#education" class="nav-link">Education</a></li>
+                <li><a href="#languages" class="nav-link">Languages</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <div class="hero-greeting">Hi, I'm</div>
+                <h1 class="hero-title">
+                    <span class="text-gradient">Husnain Khan</span>
+                </h1>
+                <h2 class="hero-subtitle">
+                    <span class="typing-text"></span>
+                    <span class="cursor">|</span>
+                </h2>
+                <p class="hero-tagline">Ensuring Quality Through Rigorous Testing & Automation</p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">
+                        <span>View My Work</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                    <a href="resume.pdf" class="btn btn-secondary" download="Husnain_Khan_Resume.pdf">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Download Resume</span>
+                    </a>
+                </div>
+                <div class="hero-social">
+                    <a href="https://linkedin.com/in/husnainkhan" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn Profile">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/Ibne-Ali-07/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="GitHub Profile">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                        </svg>
+                    </a>
+                    <a href="mailto:hassan087w@gmail.com" class="social-icon" aria-label="Email">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card">
+                    <div class="avatar-container">
+                        <div class="avatar-glow"></div>
+                        <svg class="avatar-icon" width="150" height="150" viewBox="0 0 200 200" fill="none">
+                            <circle cx="100" cy="100" r="90" fill="url(#avatarGradient)"></circle>
+                            <circle cx="100" cy="80" r="30" fill="white" opacity="0.9"></circle>
+                            <path d="M60 140 Q100 160 140 140" stroke="white" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.9"></path>
+                            <defs>
+                                <linearGradient id="avatarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1"></stop>
+                                    <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1"></stop>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Objective Section -->
+    <section id="objective" class="objective section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">01.</span>
+                <h2 class="section-title">Objective</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="objective-content">
+                <p class="objective-text">Knowledge is my tools, experience is my asset, and struggle in my belief. These are the keys to my success, opening the door to new horizons to serve humanity. I aspire to be part of an organization that provides me with challenging opportunities and an environment that allows me to maximise my potential and skills.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">02.</span>
+                <h2 class="section-title">Skills</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="skills-content">
+                <div class="skills-list">
+                    <div class="skill-item">
+                        <div class="skill-icon">🔍</div>
+                        <div class="skill-text">
+                            <h3>Quality Assurance</h3>
+                            <p>Comprehensive testing strategies and methodologies</p>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-icon">🐛</div>
+                        <div class="skill-text">
+                            <h3>Jira & Bug Tracking</h3>
+                            <p>Efficient issue management and tracking</p>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-icon">👤</div>
+                        <div class="skill-text">
+                            <h3>User-Experience Testing</h3>
+                            <p>Ensuring optimal user interactions</p>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-icon">🤝</div>
+                        <div class="skill-text">
+                            <h3>Functional & Team Communication</h3>
+                            <p>Clear collaboration and coordination</p>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-icon">📋</div>
+                        <div class="skill-text">
+                            <h3>Test Case Design & Execution</h3>
+                            <p>Systematic testing approach</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Education Section -->
+    <section id="technical-education" class="technical-education section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">03.</span>
+                <h2 class="section-title">Technical Education</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="technical-education-content">
+                <div class="education-list">
+                    <div class="education-item">
+                        <div class="education-icon">🔧</div>
+                        <div class="education-content">
+                            <div class="education-3d-card">
+                                <h3>HVAC Technician</h3>
+                                <p>Heating, Ventilation & Air Conditioning Systems</p>
+                                <div class="education-details">
+                                    <span class="tech-badge">System Installation</span>
+                                    <span class="tech-badge">Maintenance</span>
+                                    <span class="tech-badge">Repair</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="education-item">
+                        <div class="education-icon">❄️</div>
+                        <div class="education-d">
+                                <h3>AC Technician</h3>content">
+                            <div class="education-3d-car
+                                <p>Air Conditioning Systems Specialist</p>
+                                <div class="education-details">
+                                    <span class="tech-badge">Installation</span>
+                                    <span class="tech-badge">Diagnostics</span>
+                                    <span class="tech-badge">Service</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Experience Section -->
+    <section id="work-experience" class="work-experience section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">04.</span>
+                <h2 class="section-title">Work Experience</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="experience-content">
+                <div class="experience-list">
+                    
+                        <div class="experience-content">
+                            <h3>QA Manual Tester</h3>
+                            <h4>Averox Pvt. Ltd - Diplomatic Enclave, Islamabad</h4>
+                            <div class="experience-item">
+                        <div class="experience-date">March 2025 - Present</div>
+                            <div style="margin-top: 15px;"></div>
+                            <ul class="experience-bullets">
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">🔍</span>
+                                    <span>Assisted in designing and executing manual test cases based on functional requirements and user stories</span>
+                                </li>
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">⚙️</span>
+                                    <span>Performed functional, regression, and UI testing to validate application behavior across different modules</span>
+                                </li>
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">📊</span>
+                                    <span>Logged, tracked, and retested defects using Jira/Excel, ensuring timely resolution by development team</span>
+                                </li>
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">📝</span>
+                                    <span>Prepared test documentation and daily status reports, supporting senior QA engineers in project delivery</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                     <div style="margin-top:20px;"></div>
+                   
+                        <div class="experience-content">
+                            <h3>IT Coordinator</h3>
+                            <h4>PHA Foundation - Shaheed-e-Milat Secretariat, Islamabad</h4>
+                              <div class="experience-item">
+                        <div class="experience-date">October 2023 - May 2024</div>
+                            <div style="margin-top: 15px;"></div>
+                        
+                            <ul class="experience-bullets">
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">💻</span>
+                                    <span>Installed and configured computer hardware, operating systems, and applications</span>
+                                </li>
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">🔧</span>
+                                    <span>Monitored and maintained computer systems, troubleshooting hardware and software issues</span>
+                                </li>
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">🎯</span>
+                                    <span>Provided user support, procedural documentation, and reports</span>
+                                </li>
+                                <li class="bullet-item">
+                                    <span class="bullet-icon">🚀</span>
+                                    <span>Supported rollout of new applications, set up new user accounts, and resolved password issues</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personal Projects Section -->
+    <section id="personal-projects" class="personal-projects section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">05.</span>
+                <h2 class="section-title">Personal Projects</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="projects-content">
+                <div class="projects-list">
+                    <div class="project-item">
+                        <div class="project-icon">📶</div>
+                        <div class="project-content">
+                            <h3>WiFi Analyzer</h3>
+                            <p>Designed and tested 900+ test cases for WiFi network analysis and optimization</p>
+                            <p>Network analysis tool for WiFi optimization and signal strength monitoring</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Network Analysis</span>
+                                <span class="tech-tag">Signal Monitoring</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-item">
+                        <div class="project-icon">📱</div>
+                        <div class="project-content">
+                            <h3>Dairy App</h3>
+                            <p>Mobile application for dairy management and inventory tracking</p>
+                            <p>Conducted regression and UI testing to enhance usability</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Mobile App</span>
+                                <span class="tech-tag">Inventory</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-item">
+                        <div class="project-icon">📄</div>
+                        <div class="project-content">
+                            <h3>PDF Converter</h3>
+                            <p>Desktop/Web tools for PDF file conversion and manipulation</p>
+                            <p>Ensured functional and compatibility testing for high-Quality rendering </p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Desktop</span>
+                                <span class="tech-tag">Web Tools</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-item">
+                        <div class="project-icon">🏥</div>
+                        <div class="project-content">
+                            <h3>EMR - Electronic Medical Records</h3>
+                            <p>Web application for managing patient medical records and healthcare data</p>
+                            <p>Reduced critical data integrity issues by 30% through detailed QA Processes</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Web App</span>
+                                <span class="tech-tag">Healthcare</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="education section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">06.</span>
+                <h2 class="section-title">Education</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="education-content">
+                <div class="education-list">
+                    <div class="education-item">
+                        <div class="education-icon">🎓</div>
+                        <div class="education-content">
+                            <h3>BS Information Technology</h3>
+                            <p>Federal Virtual University, Islamabad</p>
+                            <div class="education-details">
+                                <span class="education-board">March 2025 - Present </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="education-item">
+                        <div class="education-icon">📚</div>
+                        <div class="education-content">
+                            <h3>Intermediate (ICS)</h3>
+                            <p>Federal Board of Intermediate Education, Islamabad</p>
+                            <div class="education-details">
+                                <span class="education-board">2023</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="education-item">
+                        <div class="education-icon">💻</div>
+                        <div class="education-content">
+                            <h3>Matriculation (Computer Science)</h3>
+                            <p>Federal Board of Intermediate Education, Islamabad</p>
+                            <div class="education-details">
+                                <span class="education-board">2021</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Languages Section -->
+    <section id="languages" class="languages section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">07.</span>
+                <h2 class="section-title">Languages</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="languages-content">
+                <div class="languages-list">
+                    <div class="language-item">
+                        <div class="language-content">
+                            <h3>Urdu</h3>
+                            <p>Fluently</p>
+                        </div>
+                    </div>
+                    <div class="language-item">
+                        <div class="language-content">
+                            <h3>English</h3>
+                            <p>Very Good</p>
+                        </div>
+                    </div>
+                    <div class="language-item">
+                        <div class="language-content">
+                            <h3>Punjabi</h3>
+                            <p>Very Good</p>
+                        </div>
+                    </div>
+                    <div class="language-item">
+                            <h3>Pashto</h3>
+                            <p>Fluent</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">06.</span>
+                <h2 class="section-title">Get In Touch</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <p class="contact-intro">I'm currently available for freelance work and full-time opportunities. If you have a project that needs quality assurance expertise, let's connect!</p>
+                    <div class="contact-cards">
+                        <div class="contact-card">
+                            <div class="contact-icon">📧</div>
+                            <h4>Email</h4>
+                            <p><a href="mailto:hassan087w@gmail.com">hassan087w@gmail.com</a></p>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">📍</div>
+                            <h4>Location</h4>
+                            <p>Islamabad, Pakistan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required="">
+                            <span class="form-line"></span>
+                            <span class="error-message" id="nameError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required="">
+                            <span class="form-line"></span>
+                            <span class="error-message" id="emailError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required="">
+                            <span class="form-line"></span>
+                            <span class="error-message" id="subjectError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required=""></textarea>
+                            <span class="form-line"></span>
+                            <span class="error-message" id="messageError"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Send Message</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                        <div class="success-message" id="successMessage">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Thank you! I'll get back to you soon.</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-text">
+                <p>Designed & Built by <span class="highlight">Husnain Khan</span></p>
+                <p class="copyright"> 2026 All rights reserved.</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://linkedin.com/in/husnainkhan" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
+                    </svg>
+                </a>
+                <a href="https://github.com/Ibne-Ali-07/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="GitHub">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                    </svg>
+                </a>
+                <a href="mailto:hassan087w@gmail.com" class="social-icon" aria-label="Email">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <button id="backToTop" class="back-to-top" aria-label="Scroll back to top">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="19" x2="12" y2="5"></line>
+                <polyline points="5 12 12 5 19 12"></polyline>
+            </svg>
+        </button>
+    </footer>
+
+    <!-- IF USING EMAILJS: Add these lines before script.js -->
+    <!-- 
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+    </script>
+    -->
+    
+    <script src="script.js"></script>
+</body>
+</html>
+</html>

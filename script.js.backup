@@ -1,0 +1,881 @@
+// ===== WAIT FOR DOM TO LOAD =====
+document.addEventListener('DOMContentLoaded', function() {
+
+// ===== THEME TOGGLE =====
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+const currentTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', currentTheme);
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const theme = html.getAttribute('data-theme');
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update particle colors after theme change
+        if (window.particleSystem) {
+            window.particleSystem.updateColors();
+        }
+    });
+}
+
+// ===== 3D PARTICLE BACKGROUND =====
+function initParticleBackground() {
+    console.log('=== CHROME EXTENSION-AWARE PARTICLE SYSTEM ===');
+    console.log('Browser:', navigator.userAgent);
+    console.log('Chrome detected:', navigator.userAgent.includes('Chrome'));
+    console.log('Incognito mode:', !window.chrome || !window.chrome.webstore);
+    
+    const canvas = document.getElementById('particleCanvas');
+    if (!canvas) {
+        console.error('Canvas element not found');
+        return;
+    }
+    
+    console.log('Canvas found, setting up context...');
+
+    // Force cache busting for Chrome normal mode
+    const isChrome = navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('Edge');
+    const isIncognito = !window.chrome || !window.chrome.webstore;
+    
+    // Add cache-busting parameter for Chrome normal mode
+    if (isChrome && !isIncognito) {
+        canvas.style.display = 'none';
+        canvas.offsetHeight; // Force reflow
+        canvas.style.display = '';
+        console.log('Cache busting applied for Chrome normal mode');
+    }
+
+    // Browser-specific canvas setup with extension conflict detection
+    let ctx;
+    let contextAttempt = 0;
+    const maxAttempts = 3;
+    
+    function createContext(attempt) {
+        try {
+            console.log(`Context creation attempt ${attempt + 1}/${maxAttempts}`);
+            
+            if (isChrome) {
+                // Chrome-specific setup with multiple fallbacks
+                const contexts = [
+                    () => canvas.getContext('2d', { 
+                        alpha: true,
+                        desynchronized: false,
+                        willReadFrequently: false,
+                        preserveDrawingBuffer: true
+                    }),
+                    () => canvas.getContext('2d', { 
+                        alpha: true,
+                        desynchronized: false
+                    }),
+                    () => canvas.getContext('2d'),
+                    () => {
+                        // Last resort - recreate canvas
+                        const newCanvas = canvas.cloneNode(true);
+                        canvas.parentNode.replaceChild(newCanvas, canvas);
+                        return newCanvas.getContext('2d');
+                    }
+                ];
+                
+                for (let i = 0; i < contexts.length; i++) {
+                    try {
+                        const testCtx = contexts[i]();
+                        if (testCtx) {
+                            console.log(`Context created with method ${i + 1}`);
+                            return testCtx;
+                        }
+                    } catch (e) {
+                        console.log(`Context method ${i + 1} failed:`, e.message);
+                    }
+                }
+            } else {
+                // Edge and other browsers
+                return canvas.getContext('2d');
+            }
+            
+            throw new Error('All context creation methods failed');
+        } catch (error) {
+            console.error(`Context attempt ${attempt + 1} error:`, error);
+            if (attempt < maxAttempts - 1) {
+                setTimeout(() => createContext(attempt + 1), 100 * (attempt + 1));
+            } else {
+                console.error('All context creation attempts failed');
+                return null;
+            }
+        }
+    }
+    
+    ctx = createContext(contextAttempt);
+    
+    if (!ctx) {
+        console.error('Could not create canvas context after all attempts');
+        return;
+    }
+    
+    console.log('Canvas context created successfully');
+
+    // Universal canvas setup
+    function resizeCanvas() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        canvas.width = width;
+        canvas.height = height;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        
+        console.log('Canvas resized to:', width, 'x', height);
+    }
+    resizeCanvas();
+
+    // Particle class
+    class Particle {
+        constructor() {
+            const dpr = window.devicePixelRatio || 1;
+            this.x = Math.random() * window.innerWidth;
+            this.y = Math.random() * window.innerHeight;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = (Math.random() - 0.5) * 0.5;
+            this.speedY = (Math.random() - 0.5) * 0.5;
+        }
+
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+
+            if (this.x > window.innerWidth || this.x < 0) this.speedX *= -1;
+            if (this.y > window.innerHeight || this.y < 0) this.speedY *= -1;
+        }
+
+        draw() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            ctx.fillStyle = theme === 'dark' 
+                ? 'rgba(100, 255, 218, 0.6)'
+                : 'rgba(59, 130, 246, 0.4)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // Create particles
+    const particles = [];
+    const particleCount = 50;
+    
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+
+    // Enhanced animation loop for Chrome compatibility
+    let animationId;
+    let frameCount = 0;
+    
+    function animate() {
+        try {
+            // Chrome-specific frame counter
+            frameCount++;
+            if (frameCount % 60 === 0) {
+                console.log('Animation running, frame:', frameCount);
+            }
+            
+            // Clear canvas with Chrome optimization
+            if (isChrome) {
+                ctx.save();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.restore();
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // Update and draw particles
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                
+                // Debug first few particles in Chrome
+                if (isChrome && index < 3 && frameCount % 120 === 0) {
+                    console.log(`Particle ${index}: x=${particle.x.toFixed(1)}, y=${particle.y.toFixed(1)}`);
+                }
+            });
+            
+            // Draw connections
+            const theme = document.documentElement.getAttribute('data-theme');
+            let connectionCount = 0;
+            
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        connectionCount++;
+                        ctx.strokeStyle = theme === 'dark' 
+                            ? 'rgba(100, 255, 218, 0.2)'
+                            : 'rgba(59, 130, 246, 0.15)';
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            // Log connection count periodically in Chrome
+            if (isChrome && frameCount % 120 === 0) {
+                console.log(`Active connections: ${connectionCount}`);
+            }
+            
+            animationId = requestAnimationFrame(animate);
+        } catch (error) {
+            console.error('Animation error:', error);
+            console.error('Frame:', frameCount);
+            console.error('Canvas state:', canvas.width, 'x', canvas.height);
+            
+            // Restart animation if error occurs
+            setTimeout(() => {
+                if (animationId) cancelAnimationFrame(animationId);
+                frameCount = 0;
+function resizeCanvas() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    
+    console.log('Canvas resized to:', width, 'x', height);
+}
+resizeCanvas();
+
+// Particle class
+class Particle {
+    constructor() {
+        const dpr = window.devicePixelRatio || 1;
+        this.x = Math.random() * window.innerWidth;
+        this.y = Math.random() * window.innerHeight;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+    }
+
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x > window.innerWidth || this.x < 0) this.speedX *= -1;
+        if (this.y > window.innerHeight || this.y < 0) this.speedY *= -1;
+    }
+
+    draw() {
+        const theme = document.documentElement.getAttribute('data-theme');
+        ctx.fillStyle = theme === 'dark' 
+            ? 'rgba(100, 255, 218, 0.6)'
+            : 'rgba(59, 130, 246, 0.4)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// Create particles
+const particles = [];
+const particleCount = 50;
+    
+for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+}
+
+// Enhanced animation loop for Chrome compatibility
+let animationId;
+let frameCount = 0;
+    
+function animate() {
+    try {
+        // Chrome-specific frame counter
+        frameCount++;
+        if (frameCount % 60 === 0) {
+            console.log('Animation running, frame:', frameCount);
+        }
+        
+        // Clear canvas with Chrome optimization
+        if (isChrome) {
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+        } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        // Update and draw particles
+        particles.forEach((particle, index) => {
+            particle.update();
+            particle.draw();
+            
+            // Debug first few particles in Chrome
+            if (isChrome && index < 3 && frameCount % 120 === 0) {
+                console.log(`Particle ${index}: x=${particle.x.toFixed(1)}, y=${particle.y.toFixed(1)}`);
+            }
+        });
+        
+        // Draw connections
+        const theme = document.documentElement.getAttribute('data-theme');
+        let connectionCount = 0;
+        
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) {
+                    connectionCount++;
+                    ctx.strokeStyle = theme === 'dark' 
+                        ? 'rgba(100, 255, 218, 0.2)'
+                        : 'rgba(59, 130, 246, 0.15)';
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        // Log connection count periodically in Chrome
+        if (isChrome && frameCount % 120 === 0) {
+            console.log(`Active connections: ${connectionCount}`);
+        }
+        
+        animationId = requestAnimationFrame(animate);
+    } catch (error) {
+        console.error('Animation error:', error);
+        console.error('Frame:', frameCount);
+        console.error('Canvas state:', canvas.width, 'x', canvas.height);
+        
+        // Restart animation if error occurs
+        setTimeout(() => {
+            if (animationId) cancelAnimationFrame(animationId);
+            frameCount = 0;
+            animate();
+        }, 100);
+    }
+}
+
+// Start animation with browser-specific timing
+const startDelay = isChrome ? 200 : 50;  // Longer delay for Chrome
+setTimeout(() => {
+    console.log('Starting animation with', particles.length, 'particles');
+    animate();
+}, startDelay);
+
+// Handle resize with debouncing for Chrome
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        resizeCanvas();
+    }, 250);
+});
+
+// Make particles accessible globally for theme updates
+window.particleSystem = {
+    updateColors: () => {
+        // No need to update colors here, it's handled in the draw method
+    },
+    destroy: () => {
+        // No need to destroy the particle system here
+    }
+};
+}
+
+// Chrome extension conflict detection and fallback
+function detectChromeExtensionIssues() {
+    const isChrome = navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('Edge');
+    const isIncognito = !window.chrome || !window.chrome.webstore;
+    
+    if (isChrome && !isIncognito) {
+        console.log('=== CHROME EXTENSION CONFLICT DETECTION ===');
+        
+        // Check for common extension conflicts
+        const hasAdBlocker = !!(window.adblock || window.adblocker || 
+            document.querySelector('#adblock-message') ||
+            document.querySelector('[data-adblock]'));
+        
+        const hasPrivacyExtension = !!(window.PrivacyBadger || 
+            window.ghostery || window.uBlockOrigin);
+        
+        const hasCanvasBlocker = (() => {
+            const testCanvas = document.createElement('canvas');
+            const testCtx = testCanvas.getContext('2d');
+            return !testCtx || testCtx.canvas !== testCanvas;
+        })();
+        
+        console.log('Ad blocker detected:', hasAdBlocker);
+        console.log('Privacy extension detected:', hasPrivacyExtension);
+        console.log('Canvas blocker detected:', hasCanvasBlocker);
+        
+        return {
+            hasConflicts: hasAdBlocker || hasPrivacyExtension || hasCanvasBlocker,
+            hasAdBlocker,
+            hasPrivacyExtension,
+            hasCanvasBlocker
+        };
+    }
+    
+    return { hasConflicts: false };
+}
+
+// Fallback particle system for Chrome with extension conflicts
+function initFallbackParticles() {
+    console.log('=== FALLBACK PARTICLE SYSTEM ===');
+    
+    const canvas = document.getElementById('particleCanvas');
+    if (!canvas) return;
+    // ... (rest of the code remains the same)
+    
+    // Simple CSS-based fallback particles
+    const particleContainer = document.createElement('div');
+    particleContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    `;
+    
+    // Create CSS particles
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        const size = Math.random() * 4 + 2;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        
+        particle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            animation: floatParticle ${duration}s ${delay}s infinite ease-in-out;
+        `;
+        
+        particleContainer.appendChild(particle);
+    }
+    
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes floatParticle {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1); 
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(1.2); 
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(0.8); 
+                opacity: 0.4;
+            }
+            75% { 
+                transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(1.1); 
+                opacity: 0.7;
+            }
+        }
+        
+        [data-theme="dark"] div[style*="background"] {
+            background: radial-gradient(circle, rgba(100, 255, 218, 0.6) 0%, transparent 70%) !important;
+        }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.insertBefore(particleContainer, document.body.firstChild);
+    
+    console.log('Fallback CSS particle system initialized');
+    return particleContainer;
+}
+
+// Initialize particle background with extension conflict handling
+setTimeout(() => {
+    console.log('Starting particle background initialization...');
+    
+    const extensionIssues = detectChromeExtensionIssues();
+    
+    if (extensionIssues.hasConflicts) {
+        console.log('Extension conflicts detected, using fallback system');
+        initFallbackParticles();
+        
+        // Show user notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10000;
+            max-width: 300px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        `;
+        notification.innerHTML = `
+            <strong>Chrome Extension Detected</strong><br>
+            Using fallback animation. Disable ad blockers for full effect.
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 5000);
+    } else {
+        // Try normal particle system
+        initParticleBackground();
+        
+        // Test canvas after initialization
+        setTimeout(() => {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            if (ctx && canvas.width > 0 && canvas.height > 0) {
+                console.log('=== CANVAS TEST SUCCESSFUL ===');
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                ctx.fillRect(10, 10, 50, 50);
+                console.log('Test rectangle drawn - canvas is working!');
+            } else {
+                console.error('=== CANVAS TEST FAILED - FALLBACK INITIATED ===');
+                // Fallback to CSS particles if canvas fails
+                initFallbackParticles();
+            }
+        }, 1000);
+    }
+}, 100);
+
+// ... (rest of the code remains the same)
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const navLinksContainer = document.getElementById('navLinks');
+
+window.addEventListener('scroll', () => {
+    if (navbar) {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    let current = '';
+    const sections = document.querySelectorAll('section');
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 100) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').slice(1) === current) {
+            link.classList.add('active');
+        }
+    });
+});
+
+if (mobileMenuToggle && navLinksContainer) {
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        navLinksContainer.classList.toggle('active');
+    });
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            navLinksContainer.classList.remove('active');
+        });
+    });
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            const offsetTop = target.offsetTop - 80;
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// ===== TYPING EFFECT =====
+const typingText = document.querySelector('.typing-text');
+if (typingText) {
+    const texts = [
+        'QA Engineer',
+        'Test Automation Expert',
+        'Quality Assurance Specialist',
+        'Bug Hunter'
+    ];
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function type() {
+        const currentText = texts[textIndex];
+        
+        if (isDeleting) {
+            typingText.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            typingText.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+        }
+        
+        if (!isDeleting && charIndex === currentText.length) {
+            isDeleting = true;
+            setTimeout(type, 2000);
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            textIndex = (textIndex + 1) % texts.length;
+            setTimeout(type, 500);
+        } else {
+            setTimeout(type, isDeleting ? 50 : 100);
+        }
+    }
+
+    type();
+}
+
+// ===== SCROLL REVEAL ANIMATIONS =====
+const revealElements = document.querySelectorAll('.section-reveal');
+
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            
+            const statNumbers = entry.target.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                if (!stat.classList.contains('animated')) {
+                    stat.classList.add('animated');
+                    const target = parseInt(stat.getAttribute('data-target'));
+                    animateNumber(stat, target);
+                }
+            });
+            
+            const progressBars = entry.target.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const progress = bar.getAttribute('data-progress');
+                setTimeout(() => {
+                    bar.style.width = progress + '%';
+                }, 200);
+            });
+        }
+    });
+}, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+});
+
+revealElements.forEach(element => {
+    revealObserver.observe(element);
+});
+
+function animateNumber(element, target) {
+    let current = 0;
+    const increment = target / 50;
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target + '+';
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current) + '+';
+        }
+    }, 30);
+}
+
+// ===== SKILL TABS =====
+const skillTabs = document.querySelectorAll('.skill-tab');
+const skillContents = document.querySelectorAll('.skill-category-content');
+
+skillTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const category = tab.getAttribute('data-category');
+        
+        skillTabs.forEach(t => t.classList.remove('active'));
+        skillContents.forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        const targetContent = document.querySelector(`.skill-category-content[data-category="${category}"]`);
+        if (targetContent) {
+            targetContent.classList.add('active');
+            
+            const progressBars = targetContent.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                bar.style.width = '0';
+                const progress = bar.getAttribute('data-progress');
+                setTimeout(() => {
+                    bar.style.width = progress + '%';
+                }, 100);
+            });
+        }
+    });
+});
+
+// ===== CONTACT FORM WITH DIRECT EMAIL =====
+const contactForm = document.getElementById('contactForm');
+const successMessage = document.getElementById('successMessage');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        document.querySelectorAll('.error-message').forEach(error => {
+            error.textContent = '';
+        });
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        let isValid = true;
+
+        if (name === '') {
+            document.getElementById('nameError').textContent = 'Name is required';
+            isValid = false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email === '') {
+            document.getElementById('emailError').textContent = 'Email is required';
+            isValid = false;
+        } else if (!emailRegex.test(email)) {
+            document.getElementById('emailError').textContent = 'Please enter a valid email';
+            isValid = false;
+        }
+
+        if (subject === '') {
+            document.getElementById('subjectError').textContent = 'Subject is required';
+            isValid = false;
+        }
+
+        if (message === '') {
+            document.getElementById('messageError').textContent = 'Message is required';
+            isValid = false;
+        } else if (message.length < 10) {
+            document.getElementById('messageError').textContent = 'Message must be at least 10 characters';
+            isValid = false;
+        }
+
+        if (isValid) {
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span>Sending...</span>';
+            submitBtn.disabled = true;
+
+            // Create email content for user's email client
+            const emailSubject = encodeURIComponent(`Portfolio Contact: ${subject}`);
+            const emailBody = encodeURIComponent(
+                `Name: ${name}\n` +
+                `Email: ${email}\n` +
+                `Subject: ${subject}\n\n` +
+                `Message:\n${message}`
+            );
+
+            // Create mailto link
+            const mailtoLink = `mailto:hassan087w@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+            
+            // Debug: Log the mailto link to console
+            console.log('Mailto link:', mailtoLink);
+            
+            // Try multiple methods to open email client
+            try {
+                // Method 1: Try window.open first
+                const newWindow = window.open(mailtoLink, '_blank');
+                
+                // If window.open fails (blocked by popup blocker), try direct link
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    console.log('Window.open blocked, trying direct link...');
+                    // Create temporary link element
+                    const tempLink = document.createElement('a');
+                    tempLink.href = mailtoLink;
+                    tempLink.target = '_blank';
+                    tempLink.click();
+                }
+            } catch (error) {
+                console.error('Error opening email client:', error);
+                // Fallback: Copy email to clipboard
+                navigator.clipboard.writeText('hassan087w@gmail.com').then(() => {
+                    alert('Email client could not be opened. Email address copied to clipboard: hassan087w@gmail.com');
+                });
+            }
+
+            // Show success message after a short delay
+            setTimeout(() => {
+                successMessage.classList.add('show');
+                contactForm.reset();
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 5000);
+            }, 1000);
+        }
+    });
+}
+
+// ===== BACK TO TOP BUTTON =====
+const backToTopButton = document.getElementById('backToTop');
+
+if (backToTopButton) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 500) {
+            backToTopButton.classList.add('show');
+        } else {
+            backToTopButton.classList.remove('show');
+        }
+    });
+
+    backToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+const projectLinks = document.querySelectorAll('.project-link');
+
+projectLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Project details modal would open here. You can implement a custom modal or link to a detailed project page.');
+    });
+});
+
+console.log('%c👋 Welcome to my portfolio!', 'color: #06b6d4; font-size: 20px; font-weight: bold;');
+console.log('%cLooking for a QA Engineer? Let\'s connect!', 'color: #64748b; font-size: 14px;');
+
+}); // End of DOMContentLoaded

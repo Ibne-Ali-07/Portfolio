@@ -1,0 +1,21 @@
+{
+  "name": "ibne-ali-portfolio",
+  "version": "1.0.0",
+  "description": "QA Engineer Portfolio Website",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "dev": "python -m http.server 3000",
+    "build": "echo 'Build complete - static site ready for deployment'"
+  },
+  "keywords": [
+    "portfolio",
+    "qa-engineer",
+    "web-development",
+    "static-site"
+  ],
+  "author": "Ibne Ali",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
